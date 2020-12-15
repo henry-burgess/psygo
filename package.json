@@ -9,10 +9,10 @@
   "scripts": {
     "test": "jest",
     "build": "tsc -p .",
-    "local": "npm run build && sudo npm i -g",
+    "local": "npm run build && sudo npm i -g && mkdir testing && cd testing",
     "create": "npm run build && npm run test",
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+    "refresh": "rm -rf ./node_modules ./package-lock.json ./testing && npm install"
   },
   "repository": {
     "type": "git",
@@ -43,8 +43,12 @@
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^6.2.1",
+    "fetch": "^1.1.0",
     "figlet": "^1.5.0",
     "inquirer": "^7.3.3",
+    "jspsych": "^6.0.0",
+    "mustache": "^4.1.0",
+    "node-fetch": "^2.6.1",
     "path": "^0.12.7"
   }
 }

@@ -20,9 +20,9 @@ program
 
 // Create a new plugin
 program
-    .command('create <name>')
+    .command('create')
     .description('create a new jsPsych plugin')
-    .action(function(name: any, options: any) {
+    .action(function() {
         create.start()
     });
 
