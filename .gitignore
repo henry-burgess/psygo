@@ -2,7 +2,7 @@
 .DS_Store
 lib/
 package-lock.json
-test/
+testing/
 
 # Logs
 logs

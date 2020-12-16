@@ -2,9 +2,10 @@ const inquirer = require('inquirer');
 const mustache = require('mustache');
 const fs = require('fs');
 const fetcher = require('node-fetch');
+const util = require('./util');
 
-const main_template = `
-let timeline = []
+
+const main_template = `let timeline = []
 
 // Instructions for your participants to follow
 let instruction_html = "<p><b>Instructions</b></p>" +
@@ -24,8 +25,7 @@ jsPsych.init({
     display_element: 'jspsych-target'
 })`
 const classes_template = `// An empty file for you to specify any custom classes outside of the existing plugin files.`
-const jspsych_plugin_template = `
-jsPsych.plugins[{{name}}] = (function(){
+const jspsych_plugin_template = `jsPsych.plugins[{{name}}] = (function(){
 
     var plugin = {};
 
@@ -37,18 +37,16 @@ jsPsych.plugins[{{name}}] = (function(){
     }
 
     plugin.trial = function(display_element, trial){
-    jsPsych.finishTrial();
+        jsPsych.finishTrial();
     }
 
     return plugin;
 
 })();`
-const config_template = `
-module.exports = {
+const config_template = `module.exports = {
     name: {{name}}
 }`
-const head_template = `
-<!DOCTYPE html>
+const head_template = `<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>{{name}}</title>
@@ -67,6 +65,29 @@ const head_template = `
     {{/classes}}
 </html>`
 
+let templates = [
+    {
+        name: "main.js",
+        formatting: main_template
+    },
+    {
+        name: "classes.js",
+        formatting: classes_template
+    },
+    {
+        name: "jspsych-plugin.js",
+        formatting: jspsych_plugin_template
+    },
+    {
+        name: "psygo.config.js",
+        formatting: config_template
+    },
+    {
+        name: "index.html",
+        formatting: head_template
+    }
+]
+
 function start() {
     inquirer
         .prompt([
@@ -80,12 +101,12 @@ function start() {
             // Run the construct function
             construct(answers.name);
         })
-        .catch((error: any) => {
-            if (error.isTtyError) {
-                console.error("Prompt could not be rendered!");
+        .catch((e: any) => {
+            if (e.isTtyError) {
+                console.log(util.error("Prompt could not be rendered!"));
             } else {
-                console.error("Something unknown happened!");
-                console.error(error);
+                console.log(util.error("Something unknown happened!"));
+                console.log(util.error(e));
             }
         })
 }
@@ -105,9 +126,12 @@ function construct(name: string) {
         name: name
     };
 
-    // Create each of the JavaScript files using the templates
-    let rendered = mustache.render(classes_template, template_data);
-    fs.writeFileSync(`./${name}/classes.js`, rendered);
+    // Create each of the files using the templates
+    templates.forEach(file => {
+        let rendered = mustache.render(file.formatting, template_data);
+        fs.writeFileSync(`./${name}/${file.name}`, rendered);
+        console.log(util.success(`Created file '${file.name}'.`))
+    });
 }
 
 /**
@@ -118,8 +142,9 @@ function create_directory(name: string) {
     let dir = `./${name}`;
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
+        console.log(util.success(`Created directory '${name}'.`))
     } else {
-        console.warn(`Directory ${name} already exists!`);
+        console.log(util.warning(`Directory '${name}' already exists!`));
     }
 }
 

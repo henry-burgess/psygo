@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-// Main file, handles invokation
-
 // External requirements
-const chalk = require('chalk');
 const clear = require('clear');
 const figlet = require('figlet');
 const path = require('path');
