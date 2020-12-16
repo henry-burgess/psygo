@@ -1,8 +1,7 @@
 const inquirer = require('inquirer');
 const mustache = require('mustache');
-const fs = require('fs');
 const fetcher = require('node-fetch');
-const util = require('./util');
+const create_util = require('./util');
 
 
 const main_template = `// Construct the timeline of your trial here
@@ -106,10 +105,10 @@ function start() {
         })
         .catch((e: any) => {
             if (e.isTtyError) {
-                console.log(util.error("Prompt could not be rendered!"));
+                console.log(create_util.error("Prompt could not be rendered!"));
             } else {
-                console.log(util.error("Something unknown happened!"));
-                console.log(util.error(e));
+                console.log(create_util.error("Something unknown happened!"));
+                console.log(create_util.error(e));
             }
         })
 }
@@ -120,10 +119,10 @@ function start() {
  */
 function construct(name: string) {
     // Create top-level directory
-    create_directory(name);
+    create_util.create_directory(`${name}`);
 
     // Create assets directory
-    create_directory(`${name}/assets`);
+    create_util.create_directory(`${name}/assets`);
 
     let template_data = {
         name: name
@@ -132,23 +131,8 @@ function construct(name: string) {
     // Create each of the files using the templates
     templates.forEach(file => {
         let rendered = mustache.render(file.formatting, template_data);
-        fs.writeFileSync(`./${name}/${file.name}`, rendered);
-        console.log(util.success(`Created file '${file.name}'.`))
+        create_util.create_file(`./${name}/${file.name}`, rendered);
     });
-}
-
-/**
- * Create a new directory in the current working directory.
- * @param name The name of the new directory.
- */
-function create_directory(name: string) {
-    let dir = `./${name}`;
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-        console.log(util.success(`Created directory '${name}'.`))
-    } else {
-        console.log(util.warning(`Directory '${name}' already exists!`));
-    }
 }
 
 module.exports = {
