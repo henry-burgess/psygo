@@ -6,7 +6,7 @@ const figlet = require('figlet');
 const path = require('path');
 const program = require('commander');
 
-// Class requirements
+// Internal requirements
 const create = require('./components/create');
 const build = require('./components/build');
 const invoke_util = require('./components/util');
@@ -26,10 +26,10 @@ program
 
 // Build a plugin for local development
 program
-    .command('local')
+    .command('start')
     .description('build the jsPsych plugin for local development and testing')
     .action(function() {
-        if (invoke_util.valid_invokation("local")) {
+        if (invoke_util.valid_invokation("start")) {
             build.local();
         } else {
             console.log(invoke_util.error(`Not a psygo directory!`));
@@ -38,10 +38,10 @@ program
 
 // Build a plugin for Gorilla deployment
 program
-    .command('deploy')
-    .description('deploy the jsPsych plugin for usage on Gorilla')
+    .command('export')
+    .description('export the jsPsych plugin for usage on Gorilla')
     .action(function() {
-        if (invoke_util.valid_invokation("deploy")) {
+        if (invoke_util.valid_invokation("export")) {
             // build.deploy();
         } else {
             console.log(invoke_util.error(`Not a psygo directory!`));

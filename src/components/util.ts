@@ -1,6 +1,10 @@
+// External requirements
 const chalk = require('chalk');
 const fs = require('fs');
-const http = require('http');
+const request = require('request');
+
+// Constants
+const default_configuration_location = `./psygo.config.js`;
 
 // Chalk formatting
 const success = chalk.keyword('green');
@@ -8,24 +12,23 @@ const info = chalk.keyword('blue');
 const warning = chalk.keyword('yellow');
 const error = chalk.bold.red;
 
-// File management
 /**
  * Create a new directory in the current working directory.
- * @param name The name of the new directory.
+ * @param path The name of the new directory.
  */
-function create_directory(name: string) {
-    let dir = `./${name}`;
+function create_directory(path: string) {
+    let dir = `${path}`;
     if (!fs.existsSync(dir)) {
         try {
             fs.mkdirSync(dir);
-            console.log(success(`Created directory '${name}'.`));
+            console.log(success(`Created directory '${path}'.`));
         } catch (e) {
-            console.log(error(`Error creating directory '${name}'.`));
+            console.log(error(`Error creating directory '${path}'.`));
             console.log(error(e));
         }
         
     } else {
-        console.log(warning(`Directory '${name}' already exists!`));
+        console.log(warning(`Directory '${path}' already exists!`));
     }
 }
 
@@ -101,15 +104,34 @@ function delete_file(path: string) {
  */
 function download_file(online_path: string, local_path: string) {
     let file = fs.createWriteStream(`${local_path}`);
-    let request = http.get(`${online_path}`, function(stream: any) {
-        stream.pipe(file);
-        file.on("finish", function() {
-            file.close();
-        })
-    }).on("error", function(e: any) {
-        console.log(error(`Error downloading file '${online_path}'.`));
-        console.log(error(e));
+
+    // Send GET request
+    let sent_request = request.get(online_path);
+    console.log(info(`Downloading '${online_path}' to '${local_path}'...`));
+    sent_request.on("response", (response: any) => {
+        if (response.statusCode !== 200) {
+            console.log(error(`Could not download ${online_path}, received status code ${response.statusCode}!`));
+        } else {
+            // Pipe received response into file
+            sent_request.pipe(file);
+            console.log(success(`Successfully downloaded '${online_path}' => '${local_path}'.`))
+        }
+    });
+
+    file.on("finish", () => file.close());
+
+    // Handle request errors
+    sent_request.on("error", (e: any) => {
         delete_file(local_path);
+        console.log(error(`Request error when downloading '${online_path}'.`));
+        console.log(error(e));
+    });
+
+    // Handle file errors
+    file.on("error", (e: any) => {
+        delete_file(local_path);
+        console.log(error(`Request error when creating file '${local_path}'.`));
+        console.log(error(e));
     });
 }
 
@@ -118,9 +140,10 @@ function download_file(online_path: string, local_path: string) {
  * @param command Command that was invoked.
  */
 function valid_invokation(command: string) {
-    let commands = ["local", "deploy"];
+    let commands = ["start", "export"];
     if (commands.includes(command)) {
-        return file_exists(`./psygo.config.js`);
+        // Check for configuration file
+        return file_exists(default_configuration_location);
     }
     return true;
 }

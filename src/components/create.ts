@@ -1,9 +1,10 @@
+// External requirements
 const inquirer = require('inquirer');
-const mustache = require('mustache');
+const create_mustache = require('mustache');
 const fetcher = require('node-fetch');
 const create_util = require('./util');
 
-
+// Templates
 const main_template = `// Construct the timeline of your trial here
 let timeline = []
 
@@ -48,26 +49,9 @@ const jspsych_plugin_template = `jsPsych.plugins[{{name}}] = (function(){
 const config_template = `module.exports = {
     name: {{name}}
 }`
-const head_template = `<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{{name}}</title>
-        {{#libraries}}
-        <script src="js/{{src}}"></script>
-        {{/libraries}}
-        {{#styles}}
-        <link href="{{src}}" rel="stylesheet" type="text/css">
-        {{/styles}}
-    </head>
-    <body>
-        <div id="jspsych-target"></div>
-    </body>
-    {{#classes}}
-    <script src="js/{{src}}"></script>
-    {{/classes}}
-</html>`
 
-let templates = [
+// Collect all JavaScript templates
+let javascript_templates = [
     {
         name: "main.js",
         formatting: main_template
@@ -83,13 +67,12 @@ let templates = [
     {
         name: "psygo.config.js",
         formatting: config_template
-    },
-    {
-        name: "index.html",
-        formatting: head_template
     }
 ]
 
+/**
+ * Initial prompt to collect information about the plugin.
+ */
 function start() {
     inquirer
         .prompt([
@@ -129,12 +112,12 @@ function construct(name: string) {
     };
 
     // Create each of the files using the templates
-    templates.forEach(file => {
-        let rendered = mustache.render(file.formatting, template_data);
+    javascript_templates.forEach(file => {
+        let rendered = create_mustache.render(file.formatting, template_data);
         create_util.create_file(`./${name}/${file.name}`, rendered);
     });
 }
 
 module.exports = {
-    start
+    start,
 }

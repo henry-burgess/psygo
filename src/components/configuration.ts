@@ -1,0 +1,1 @@
+// Loads and interprets psygo.config.js configuration files
