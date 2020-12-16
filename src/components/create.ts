@@ -5,7 +5,8 @@ const fetcher = require('node-fetch');
 const util = require('./util');
 
 
-const main_template = `let timeline = []
+const main_template = `// Construct the timeline of your trial here
+let timeline = []
 
 // Instructions for your participants to follow
 let instruction_html = "<p><b>Instructions</b></p>" +
@@ -32,11 +33,13 @@ const jspsych_plugin_template = `jsPsych.plugins[{{name}}] = (function(){
     plugin.info = {
         name: {{name}},
         parameters: {
-
+            // Define any parameters here. See the jsPsych documentation on how to use this field.
         }
     }
 
     plugin.trial = function(display_element, trial){
+        // Write your JavaScript for the trial here.
+
         jsPsych.finishTrial();
     }
 
