@@ -46,8 +46,13 @@ const jspsych_plugin_template = `jsPsych.plugins[{{name}}] = (function(){
     return plugin;
 
 })();`
-const config_template = `module.exports = {
-    name: {{name}}
+const config_template = `{
+    "name": "{{name}}",
+    "files": [
+        { "src": "main.js" }, 
+        { "src": "classes.js" }, 
+        { "src": "jspsych-{{name}}.js"}
+    ]
 }`
 
 // Collect all JavaScript templates
@@ -61,7 +66,7 @@ let javascript_templates = [
         formatting: classes_template
     },
     {
-        name: "jspsych-plugin.js",
+        name: "jspsych-{{name}}.js",
         formatting: jspsych_plugin_template
     },
 ]
@@ -112,13 +117,14 @@ function construct(name: string) {
 
     // Create each of the files using the templates
     javascript_templates.forEach(file => {
+        let file_name = create_mustache.render(file.name, template_data);
         let rendered = create_mustache.render(file.formatting, template_data);
-        create_util.create_file(`./${name}/src/${file.name}`, rendered);
+        create_util.create_file(`./${name}/src/${file_name}`, rendered);
     });
 
     // Create the configuraiton file
     let rendered = create_mustache.render(config_template, template_data);
-    create_util.create_file(`./${name}/psygo.config.js`, rendered);
+    create_util.create_file(`./${name}/psygo.config.json`, rendered);
 }
 
 module.exports = {

@@ -3,8 +3,10 @@ const chalk = require('chalk');
 const fs = require('fs');
 const request = require('request');
 
+// Internal requirements
+
 // Constants
-const default_configuration_location = `./psygo.config.js`;
+const default_configuration_location = './psygo.config.json';
 
 // Chalk formatting
 const success = chalk.keyword('green');
@@ -77,7 +79,7 @@ function move_file(old_path: string, new_path: string, delete_old: boolean) {
         }
     });
 
-    if (delete_old === true) {
+    if (delete_old) {
         delete_file(old_path);
     }
 
@@ -101,8 +103,9 @@ function delete_file(path: string) {
  * Utility function to download a file located online.
  * @param online_path Location of the online file.
  * @param local_path Download target of the file.
+ * @param callback Callback function to execute.
  */
-function download_file(online_path: string, local_path: string) {
+function download_file(online_path: string, local_path: string, callback: any) {
     let file = fs.createWriteStream(`${local_path}`);
 
     // Send GET request
@@ -116,22 +119,20 @@ function download_file(online_path: string, local_path: string) {
             sent_request.pipe(file);
             console.log(success(`Successfully downloaded '${online_path}' => '${local_path}'.`))
         }
-    });
-
-    file.on("finish", () => file.close());
-
-    // Handle request errors
-    sent_request.on("error", (e: any) => {
+    }).on("error", (e: any) => {
         delete_file(local_path);
         console.log(error(`Request error when downloading '${online_path}'.`));
         console.log(error(e));
     });
 
-    // Handle file errors
-    file.on("error", (e: any) => {
-        delete_file(local_path);
-        console.log(error(`Request error when creating file '${local_path}'.`));
-        console.log(error(e));
+    // Create file
+    file.on("finish", () => {
+        file.close();
+        callback();
+    }).on("error", (e: any) => {
+            delete_file(local_path);
+            console.log(error(`Request error when creating file '${local_path}'.`));
+            console.log(error(e));
     });
 }
 
@@ -149,6 +150,7 @@ function valid_invokation(command: string) {
 }
 
 module.exports = {
+    default_configuration_location,
     success,
     info,
     warning,

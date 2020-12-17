@@ -27,7 +27,7 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
             |-- main.js
             |-- classes.js
             |-- jspsych-<plugin-name>.js
-      |-- psygo.config.js
+      |-- psygo.config.json
 ```
 
 *src/main.js*: Constructs the timeline of jsPsych. Also contains the `jsPsych.init( ... );` function call.
