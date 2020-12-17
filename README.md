@@ -22,18 +22,19 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
 
 ```
     ./<plugin-name>/
-      |-- main.js
-      |-- classes.js
-      |-- jspsych-<plugin-name>.js
-      |-- psygo.config.js
       |-- assets/
+      |-- src/
+            |-- main.js
+            |-- classes.js
+            |-- jspsych-<plugin-name>.js
+      |-- psygo.config.js
 ```
 
-*main.js*: Constructs the timeline of jsPsych. Also contains the `jsPsych.init( ... );` function call.
+*src/main.js*: Constructs the timeline of jsPsych. Also contains the `jsPsych.init( ... );` function call.
 
-*classes.js*: An optional file that should contain any additional classes or functions you wish to define outside `main.js`.
+*src/classes.js*: An optional file that should contain any additional classes or functions you wish to define outside `main.js`.
 
-*jspsych-\<plugin-name\>.js*: The core plugin file that contains the plugin pre-amble described in the jsPsych documentation, trial parameters, and the `plugin.trial` function.
+*src/jspsych-\<plugin-name\>.js*: The core plugin file that contains the plugin pre-amble described in the jsPsych documentation, trial parameters, and the `plugin.trial` function.
 
 *psygo.config.js*: Configuration file for psygo. Used in the export process.
 
@@ -41,7 +42,7 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
 
 ### Export
 
-To export the plugin, open a terminal, navigate to a folder containing all the plugin files and `psygo.config.js` and call:
+To export the plugin, open a terminal, navigate to a folder containing `psygo.config.js` and call:
 ```bash 
 psygo export
 ```

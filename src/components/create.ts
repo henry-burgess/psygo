@@ -64,10 +64,6 @@ let javascript_templates = [
         name: "jspsych-plugin.js",
         formatting: jspsych_plugin_template
     },
-    {
-        name: "psygo.config.js",
-        formatting: config_template
-    }
 ]
 
 /**
@@ -107,6 +103,9 @@ function construct(name: string) {
     // Create assets directory
     create_util.create_directory(`${name}/assets`);
 
+    // Create JavaScript directory
+    create_util.create_directory(`${name}/src`);
+
     let template_data = {
         name: name
     };
@@ -114,8 +113,12 @@ function construct(name: string) {
     // Create each of the files using the templates
     javascript_templates.forEach(file => {
         let rendered = create_mustache.render(file.formatting, template_data);
-        create_util.create_file(`./${name}/${file.name}`, rendered);
+        create_util.create_file(`./${name}/src/${file.name}`, rendered);
     });
+
+    // Create the configuraiton file
+    let rendered = create_mustache.render(config_template, template_data);
+    create_util.create_file(`./${name}/psygo.config.js`, rendered);
 }
 
 module.exports = {
