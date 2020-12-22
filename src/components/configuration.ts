@@ -1,14 +1,19 @@
 // External requirements
-const config_fs = require('fs');
+const configFS = require('fs');
 
 // Internal requirements
-const config_util = require('./util');
+const configUtil = require('./util');
 
-function load_config(path: string) {
-    console.log(config_util.info(`Loading configuration module '${path}'.`));
-    return JSON.parse(config_fs.readFileSync(path, 'utf8'));
+/**
+ * Load a configuration file
+ * @param {string} path the path to the configuration file
+ * @return {JSON}
+ */
+function loadConfiguration(path: string) {
+  console.log(configUtil.info(`Loading configuration module '${path}'.`));
+  return JSON.parse(configFS.readFileSync(path, 'utf8'));
 }
 
 module.exports = {
-    load_config,
-}
+  loadConfiguration,
+};

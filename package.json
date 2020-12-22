@@ -29,6 +29,10 @@
   "homepage": "https://github.com/henry-burgess/psygo#readme",
   "devDependencies": {
     "@types/node": "^14.14.13",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "eslint": "^7.16.0",
+    "eslint-config-google": "^0.14.0",
     "gulp": "^4.0.2",
     "jest": "^26.6.3",
     "nodemon": "^2.0.6",
