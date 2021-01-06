@@ -10,8 +10,7 @@
     "test": "echo No tests!",
     "build": "tsc -p .",
     "local": "rm -rf ./dist && npm run build && sudo npm i -g && mkdir dist",
-    "refresh": "rm -rf ./node_modules ./package-lock.json ./dist && npm install",
-    "publish": "np --no-2fa"
+    "refresh": "rm -rf ./node_modules ./package-lock.json ./dist && npm install"
   },
   "repository": {
     "type": "git",
