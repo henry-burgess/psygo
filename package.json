@@ -1,6 +1,6 @@
 {
   "name": "psygo",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "The easiest way to get started creating jsPsych plugins!",
   "main": "lib/index.js",
   "bin": {
