@@ -2,6 +2,10 @@
 
 The easiest way to get started creating plugins for jsPsych! psygo is a Node CLI tool that streamlines the development of custom jsPsych plugins. psygo allows you to test your plugin locally, with the ability to export the plugin for local administration or administration via the jsPsych-friendly Gorilla platform. All the hard work is done for you, from setting up a project, to preparing it for administration.
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/henry-burgess/psygo/CI)
+[![GitHub stars](https://img.shields.io/github/stars/henry-burgess/psygo)](https://github.com/henry-burgess/psygo/stargazers)
+![npm](https://img.shields.io/npm/v/psygo)
+
 ## Requirements & Installation
 
 psygo requires Node.js v14+, available [here](https://nodejs.org/). Once Node.js has been installed, psygo can be installed using npm.
