@@ -1,8 +1,8 @@
 # MacOS
 .DS_Store
 lib/
-package-lock.json
-testing/
+.idea/
+dist/
 
 # Logs
 logs

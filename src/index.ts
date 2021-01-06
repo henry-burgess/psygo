@@ -9,7 +9,7 @@ const program = require('commander');
 // Internal requirements
 const create = require('./components/create');
 const build = require('./components/build');
-const invoke_util = require('./components/util');
+const invokeUtil = require('./components/util');
 
 // Program information
 program
@@ -29,10 +29,10 @@ program
     .command('start')
     .description('build the jsPsych plugin for local development and testing')
     .action(function() {
-        if (invoke_util.valid_invokation("start")) {
+        if (invokeUtil.validInvokation("start")) {
             build.local();
         } else {
-            console.log(invoke_util.error(`Not a psygo directory!`));
+            console.log(invokeUtil.error(`Not a psygo directory!`));
         }
     });
 
@@ -41,10 +41,10 @@ program
     .command('export')
     .description('export the jsPsych plugin for usage on Gorilla')
     .action(function() {
-        if (invoke_util.valid_invokation("export")) {
+        if (invokeUtil.validInvokation("export")) {
             // build.deploy();
         } else {
-            console.log(invoke_util.error(`Not a psygo directory!`));
+            console.log(invokeUtil.error(`Not a psygo directory!`));
         }
     });
 

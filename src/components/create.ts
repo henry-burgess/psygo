@@ -1,11 +1,10 @@
 // External requirements
 const inquirer = require('inquirer');
-const create_mustache = require('mustache');
-const fetcher = require('node-fetch');
-const create_util = require('./util');
+const createMustach = require('mustache');
+const createUtil = require('./util');
 
 // Templates
-const main_template = `// Construct the timeline of your trial here
+const mainTemplate = `// Construct the timeline of your trial here
 let timeline = []
 
 // Instructions for your participants to follow
@@ -24,16 +23,18 @@ timeline.push({
 jsPsych.init({
     timeline: timeline,
     display_element: 'jspsych-target'
-})`
-const classes_template = `// An empty file for you to specify any custom classes outside of the existing plugin files.`
-const jspsych_plugin_template = `jsPsych.plugins[{{name}}] = (function(){
+})`;
+const classesTemplate = '// An empty file for you to specify any custom ' +
+    'classes outside of the existing plugin files.';
+const pluginTemplate = `jsPsych.plugins['{{name}}'] = (function(){
 
     var plugin = {};
 
     plugin.info = {
-        name: {{name}},
+        name: '{{name}}',
         parameters: {
-            // Define any parameters here. See the jsPsych documentation on how to use this field.
+            // Define any parameters here. 
+            // See the jsPsych documentation on how to use this field.
         }
     }
 
@@ -45,82 +46,88 @@ const jspsych_plugin_template = `jsPsych.plugins[{{name}}] = (function(){
 
     return plugin;
 
-})();`
-const config_template = `module.exports = {
-    name: {{name}}
-}`
+})();`;
+const configTemplate = `{
+    "name": "{{name}}",
+    "files": [
+        { "src": "main.js" },
+        { "src": "classes.js" },
+        { "src": "plugin.js" }
+    ]
+}`;
 
 // Collect all JavaScript templates
-let javascript_templates = [
-    {
-        name: "main.js",
-        formatting: main_template
-    },
-    {
-        name: "classes.js",
-        formatting: classes_template
-    },
-    {
-        name: "jspsych-plugin.js",
-        formatting: jspsych_plugin_template
-    },
-]
+const javascriptTemplates = [
+  {
+    name: 'main.js',
+    formatting: mainTemplate,
+  },
+  {
+    name: 'classes.js',
+    formatting: classesTemplate,
+  },
+  {
+    name: 'plugin.js',
+    formatting: pluginTemplate,
+  },
+];
 
 /**
  * Initial prompt to collect information about the plugin.
  */
 function start() {
-    inquirer
-        .prompt([
-            { 
-                type: "input",
-                name: "name",
-                message: "What is the name of your plugin?"
-            }
-        ])
-        .then((answers: any) => {
-            // Run the construct function
-            construct(answers.name);
-        })
-        .catch((e: any) => {
-            if (e.isTtyError) {
-                console.log(create_util.error("Prompt could not be rendered!"));
-            } else {
-                console.log(create_util.error("Something unknown happened!"));
-                console.log(create_util.error(e));
-            }
-        })
+  inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'name',
+          message: 'What is the name of your plugin?',
+        },
+      ])
+      .then((answers: any) => {
+        // Run the construct function
+        construct(answers.name);
+      })
+      .catch((e: any) => {
+        if (e.isTtyError) {
+          console.log(createUtil.error('Prompt could not be rendered!'));
+        } else {
+          console.log(createUtil.error('Something unknown happened!'));
+          console.log(createUtil.error(e));
+        }
+      });
 }
 
 /**
  * Main function to generate project layout using templates.
- * @param name Name of the plugin to create.
+ * @param {string} name Name of the plugin to create.
  */
 function construct(name: string) {
-    // Create top-level directory
-    create_util.create_directory(`${name}`);
+  // Create top-level directory
+  createUtil.createDirectory(`${name}`);
 
-    // Create assets directory
-    create_util.create_directory(`${name}/assets`);
+  // Create assets directory
+  createUtil.createDirectory(`${name}/assets`);
 
-    // Create JavaScript directory
-    create_util.create_directory(`${name}/src`);
+  // Create JavaScript directory
+  createUtil.createDirectory(`${name}/src`);
 
-    let template_data = {
-        name: name
-    };
+  const templateData = {
+    name: name,
+  };
 
-    // Create each of the files using the templates
-    javascript_templates.forEach(file => {
-        let rendered = create_mustache.render(file.formatting, template_data);
-        create_util.create_file(`./${name}/src/${file.name}`, rendered);
-    });
+  // Create each of the files using the templates
+  javascriptTemplates.forEach((file) => {
+    const fileName = createMustach.render(file.name, templateData);
+    const rendered = createMustach.render(file.formatting, templateData);
+    createUtil.createFile(`./${name}/src/${fileName}`, rendered);
+  });
 
-    // Create the configuraiton file
-    let rendered = create_mustache.render(config_template, template_data);
-    create_util.create_file(`./${name}/psygo.config.js`, rendered);
+  // Create the configuraiton file
+  const rendered = createMustach.render(configTemplate, templateData);
+  createUtil.createFile(`./${name}/psygo.config.json`, rendered);
 }
 
 module.exports = {
-    start,
-}
+  start,
+};

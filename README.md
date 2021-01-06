@@ -1,4 +1,4 @@
-<h1>psygo</h1>
+<h1> psygo 🧠 </h1>
 
 The easiest way to get started creating plugins for jsPsych! psygo is a Node CLI tool that streamlines the development of custom jsPsych plugins. psygo allows you to test your plugin locally, with the ability to export the plugin for local administration or administration via the jsPsych-friendly Gorilla platform. All the hard work is done for you, from setting up a project, to preparing it for administration.
 
@@ -27,7 +27,7 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
             |-- main.js
             |-- classes.js
             |-- jspsych-<plugin-name>.js
-      |-- psygo.config.js
+      |-- psygo.config.json
 ```
 
 *src/main.js*: Constructs the timeline of jsPsych. Also contains the `jsPsych.init( ... );` function call.
