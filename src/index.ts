@@ -13,15 +13,14 @@ const invokeUtil = require('./components/util');
 
 // Program information
 program
-    .version('1.0.0')
-    .option('-d, --dir <path>', 'specify the directory to create the project');
+    .version('1.0.1');
 
 // Create a new plugin
 program
     .command('create')
     .description('create a new jsPsych plugin')
     .action(function() {
-        create.start()
+        create.start();
     });
 
 // Build a plugin for local development
@@ -31,18 +30,6 @@ program
     .action(function() {
         if (invokeUtil.validInvokation("start")) {
             build.local();
-        } else {
-            console.log(invokeUtil.error(`Not a psygo directory!`));
-        }
-    });
-
-// Build a plugin for Gorilla deployment
-program
-    .command('export')
-    .description('export the jsPsych plugin for usage on Gorilla')
-    .action(function() {
-        if (invokeUtil.validInvokation("export")) {
-            // build.deploy();
         } else {
             console.log(invokeUtil.error(`Not a psygo directory!`));
         }

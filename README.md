@@ -12,7 +12,7 @@ npm install -g psygo
 
 ## Usage
 
-### Create
+### Creating a new plugin
 
 To create a new plugin, open a terminal and call:
 ```bash
@@ -26,7 +26,7 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
       |-- src/
             |-- main.js
             |-- classes.js
-            |-- jspsych-<plugin-name>.js
+            |-- plugin.js
       |-- psygo.config.json
 ```
 
@@ -34,18 +34,11 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
 
 *src/classes.js*: An optional file that should contain any additional classes or functions you wish to define outside `main.js`.
 
-*src/jspsych-\<plugin-name\>.js*: The core plugin file that contains the plugin pre-amble described in the jsPsych documentation, trial parameters, and the `plugin.trial` function.
+*src/plugin.js*: The core plugin file that contains the plugin pre-amble described in the jsPsych documentation, trial parameters, and the `plugin.trial` function.
 
 *psygo.config.js*: Configuration file for psygo. Used in the export process.
 
 *assets/*: A dedicated folder for placing graphics in.
-
-### Export
-
-To export the plugin, open a terminal, navigate to a folder containing `psygo.config.js` and call:
-```bash 
-psygo export
-```
 
 ### Start
 
@@ -53,3 +46,23 @@ To test the plugin locally, open a terminal, navigate to a folder containing all
 ```bash
 psygo start
 ```
+
+This will update the directory structure of your project to the following:
+```
+    ./<plugin-name>/
+      |-- assets/
+      |-- local/
+            |-- js/
+                  |-- jspsych/...
+                  |-- classes.js
+                  |-- main.js
+                  |-- plugin.js
+            |-- index.html
+      |-- src/
+            |-- main.js
+            |-- classes.js
+            |-- plugin.js
+      |-- psygo.config.json
+```
+
+All files in the `local` directory are then served at [http://127.0.0.1:8080](http://127.0.0.1:8080) and allows you to try out your plugin!
