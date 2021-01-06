@@ -1,13 +1,13 @@
 {
   "name": "psygo",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "The easiest way to get started creating jsPsych plugins!",
   "main": "lib/index.js",
   "bin": {
     "psygo": "lib/index.js"
   },
   "scripts": {
-    "test": "jest",
+    "test": "echo No tests!",
     "build": "tsc -p .",
     "local": "rm -rf ./dist && npm run build && sudo npm i -g && mkdir dist",
     "refresh": "rm -rf ./node_modules ./package-lock.json ./dist && npm install"
