@@ -2,6 +2,7 @@
 const buildMustache = require('mustache');
 const buildUnzipper = require('unzipper');
 const buildFS = require('fs');
+const { exec } = require('child_process');
 
 // Internal requirements
 const buildUtil = require('./util');
@@ -10,6 +11,7 @@ const buildConfig = require('./configuration');
 // Constants
 const jspsychVersion = '6.2.0';
 const localLocation = `./local`;
+const sourceLocation = './src';
 const javascriptLocation = `${localLocation}/js`;
 const downloadLocation = `${javascriptLocation}/temp`;
 
@@ -37,29 +39,29 @@ const headTemplate = `<!DOCTYPE html>
  * Function to download and install jsPsych library.
  */
 function installLibraries() {
-  const url = `https://github.com/jspsych/jsPsych/releases/download/v
-    ${jspsychVersion}/jspsych-${jspsychVersion}.zip`;
-  console.log(buildUtil.info(`Obtaining jsPsych v${jspsychVersion}
-    from '${url}'.`));
+  const url = `https://github.com/jspsych/jsPsych/releases/download/` +
+    `v${jspsychVersion}/jspsych-${jspsychVersion}.zip`;
+  console.log(buildUtil.info(`Obtaining jsPsych v${jspsychVersion}` +
+    `from '${url}'.`));
 
   // Download jsPsych archive to js/temp directory and extract to js/jspsych
   buildUtil.createDirectory(javascriptLocation);
   buildUtil.createDirectory(downloadLocation);
   buildUtil.downloadFile(url, `${downloadLocation}/jspsych.zip`, function() {
-    console.log(buildUtil.info(`Extracting '
-      ${downloadLocation}/jspsych.zip'...`));
+    console.log(buildUtil.info(`Extracting ` +
+      `'${downloadLocation}/jspsych.zip'...`));
     buildFS.createReadStream(`${downloadLocation}/jspsych.zip`)
         .pipe(buildUnzipper.Extract({path: `${javascriptLocation}/jspsych`}))
         .on('finish', () => {
-          console.log(buildUtil.success(`Extracted '
-            ${downloadLocation}/jspsych.zip'.`));
+          console.log(buildUtil.success(`Extracted '` +
+            `${downloadLocation}/jspsych.zip'.`));
 
           // Delete temp directory along with contents
           buildFS.rmdirSync(downloadLocation, {recursive: true});
         })
         .on('error', (e: any) => {
-          console.log(buildUtil.error(`Error extracting '
-            ${downloadLocation}/jspsych.zip'!`));
+          console.log(buildUtil.error(`Error extracting '` +
+            `${downloadLocation}/jspsych.zip'!`));
           console.log(buildUtil.error(e));
         });
   });
@@ -72,16 +74,16 @@ function installLibraries() {
  */
 function local() {
   // Create 'local' directory for copying files into.
-  buildUtil.create_directory(localLocation);
+  buildUtil.createDirectory(localLocation);
 
   // Install jsPsych
   // Check if jsPsych folder exists, otherwise download and place jsPsych.
-  if (buildUtil.directory_exists(`${localLocation}/js/jspsych`)) {
-    console.log(buildUtil.info(`jsPsych installation found, 
-      skipping jsPsych installation.`));
+  if (buildUtil.directoryExists(`${localLocation}/js/jspsych`)) {
+    console.log(buildUtil.info(`jsPsych installation found, ` +
+      `skipping jsPsych installation.`));
   } else {
-    console.log(buildUtil.info(`jsPsych installation not detected, 
-      installing version ${jspsychVersion}.`));
+    console.log(buildUtil.info(`jsPsych installation not detected, ` +
+      `installing version ${jspsychVersion}.`));
     installLibraries();
   }
 
@@ -89,21 +91,42 @@ function local() {
   createHead(localLocation);
 
   // Copy over JavaScript to js directory
+  installSourceCode();
+
+  // Run the live server
+  startLocal();
 }
 
 /**
  * Starts a local server instance.
  */
 function startLocal() {
-  // TODO: write this function
+  console.log(buildUtil.info(`Running web server @ http://127.0.0.1:8080`));
+  exec(`http-server ${localLocation}`, (error: any, stdout: any, stderr: any) => {
+    if (error) {
+        console.log(buildUtil.error(error.message));
+        return;
+    }
+    if (stderr) {
+      console.log(buildUtil.error(stderr));
+        return;
+    }
+  });
 }
 
 /**
- * Install the custom plugin into a jsPsych instance.
- * @param {string} pluginName Name of the custom plugin to install.
+ * Install the source code into the local instance.
  */
-function installPlugin(pluginName: string) {
-  // TODO: write this function
+function installSourceCode() {
+  const configuration = buildConfig.loadConfiguration(
+    buildUtil.CONFIGURATION_LOCATION);
+  
+  // Move general files
+  configuration.files.forEach((file: any) => {
+    let oldPath = `${sourceLocation}/${file.src}`;
+    let newPath = `${javascriptLocation}/${file.src}`;
+    buildUtil.moveFile(oldPath, newPath, false);
+  });
 }
 
 /**
@@ -112,13 +135,15 @@ function installPlugin(pluginName: string) {
  */
 function createHead(path: string) {
   const configuration = buildConfig.loadConfiguration(
-      buildUtil.defaultConfigurationLocal);
+      buildUtil.CONFIGURATION_LOCATION);
 
   // Create HTML file
   const headTemplateData = {
     name: configuration.name,
     libraries: [
       {src: 'jspsych/jspsych.js'},
+      {src: 'jspsych/plugins/jspsych-instructions.js'},
+      {src: 'plugin.js'},
     ],
     styles: [
       {src: 'js/jspsych/css/jspsych.css'},
@@ -126,7 +151,7 @@ function createHead(path: string) {
     classes: configuration.files,
   };
   const html = buildMustache.render(headTemplate, headTemplateData);
-  buildUtil.create_file(`${path}/index.html`, html);
+  buildUtil.createFile(`${path}/index.html`, html);
 }
 
 module.exports = {

@@ -47,6 +47,7 @@
     "commander": "^6.2.1",
     "fetch": "^1.1.0",
     "figlet": "^1.5.0",
+    "http-server": "^0.12.3",
     "inquirer": "^7.3.3",
     "jspsych": "^6.0.0",
     "mustache": "^4.1.0",

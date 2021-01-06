@@ -26,12 +26,12 @@ jsPsych.init({
 })`;
 const classesTemplate = '// An empty file for you to specify any custom ' +
     'classes outside of the existing plugin files.';
-const pluginTemplate = `jsPsych.plugins[{{name}}] = (function(){
+const pluginTemplate = `jsPsych.plugins['{{name}}'] = (function(){
 
     var plugin = {};
 
     plugin.info = {
-        name: {{name}},
+        name: '{{name}}',
         parameters: {
             // Define any parameters here. 
             // See the jsPsych documentation on how to use this field.
@@ -50,9 +50,9 @@ const pluginTemplate = `jsPsych.plugins[{{name}}] = (function(){
 const configTemplate = `{
     "name": "{{name}}",
     "files": [
-        { "src": "main.js" }, 
-        { "src": "classes.js" }, 
-        { "src": "jspsych-{{name}}.js"}
+        { "src": "main.js" },
+        { "src": "classes.js" },
+        { "src": "plugin.js" }
     ]
 }`;
 
@@ -67,7 +67,7 @@ const javascriptTemplates = [
     formatting: classesTemplate,
   },
   {
-    name: 'jspsych-{{name}}.js',
+    name: 'plugin.js',
     formatting: pluginTemplate,
   },
 ];
@@ -104,13 +104,13 @@ function start() {
  */
 function construct(name: string) {
   // Create top-level directory
-  createUtil.create_directory(`${name}`);
+  createUtil.createDirectory(`${name}`);
 
   // Create assets directory
-  createUtil.create_directory(`${name}/assets`);
+  createUtil.createDirectory(`${name}/assets`);
 
   // Create JavaScript directory
-  createUtil.create_directory(`${name}/src`);
+  createUtil.createDirectory(`${name}/src`);
 
   const templateData = {
     name: name,
@@ -120,12 +120,12 @@ function construct(name: string) {
   javascriptTemplates.forEach((file) => {
     const fileName = createMustach.render(file.name, templateData);
     const rendered = createMustach.render(file.formatting, templateData);
-    createUtil.create_file(`./${name}/src/${fileName}`, rendered);
+    createUtil.createFile(`./${name}/src/${fileName}`, rendered);
   });
 
   // Create the configuraiton file
   const rendered = createMustach.render(configTemplate, templateData);
-  createUtil.create_file(`./${name}/psygo.config.json`, rendered);
+  createUtil.createFile(`./${name}/psygo.config.json`, rendered);
 }
 
 module.exports = {

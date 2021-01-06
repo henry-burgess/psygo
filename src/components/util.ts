@@ -6,7 +6,7 @@ const request = require('request');
 // Internal requirements
 
 // Constants
-const default_configuration_location = './psygo.config.json';
+const CONFIGURATION_LOCATION = './psygo.config.json';
 
 // Chalk formatting
 const success = chalk.keyword('green');
@@ -18,7 +18,7 @@ const error = chalk.bold.red;
  * Create a new directory in the current working directory.
  * @param path The name of the new directory.
  */
-function create_directory(path: string) {
+function createDirectory(path: string) {
     let dir = `${path}`;
     if (!fs.existsSync(dir)) {
         try {
@@ -38,7 +38,7 @@ function create_directory(path: string) {
  * Utility function to determine if a path currently exists.
  * @param path Path to check if exists.
  */
-function directory_exists(path: string) {
+function directoryExists(path: string) {
     return fs.existsSync(path);
 }
 
@@ -47,7 +47,7 @@ function directory_exists(path: string) {
  * @param path The path to the file, including the filename.
  * @param contents The contents to be written to the file.
  */
-function create_file(path: string, contents: string) {
+function createFile(path: string, contents: string) {
     try {
         fs.writeFileSync(`${path}`, contents);
         console.log(success(`Created file '${path}'.`));
@@ -61,7 +61,7 @@ function create_file(path: string, contents: string) {
  * Utility function to determine if a file at a given path exists.
  * @param path Path of file to check if exists.
  */
-function file_exists(path: string) {
+function fileExists(path: string) {
     return fs.existsSync(path);
 }
 
@@ -71,7 +71,7 @@ function file_exists(path: string) {
  * @param new_path Updated path of file.
  * @param delete_old Toggle whether to delete old file (complete move), or keep the old copy (copy move).
  */
-function move_file(old_path: string, new_path: string, delete_old: boolean) {
+function moveFile(old_path: string, new_path: string, delete_old: boolean) {
     fs.copyFile(old_path, new_path, (e: any) => {
         if (e) {
             console.log(error(`Error moving file '${old_path}'.`));
@@ -80,7 +80,7 @@ function move_file(old_path: string, new_path: string, delete_old: boolean) {
     });
 
     if (delete_old) {
-        delete_file(old_path);
+        deleteFile(old_path);
     }
 
     console.log(success(`Moved file '${old_path}' to '${new_path}'.`))
@@ -90,7 +90,7 @@ function move_file(old_path: string, new_path: string, delete_old: boolean) {
  * Utility function to delete files.
  * @param path Path of file to delete.
  */
-function delete_file(path: string) {
+function deleteFile(path: string) {
     fs.unlink(path, (e:any) => {
         if (e) {
             console.log(error(`Error deleting file '${path}'.`));
@@ -105,7 +105,7 @@ function delete_file(path: string) {
  * @param local_path Download target of the file.
  * @param callback Callback function to execute.
  */
-function download_file(online_path: string, local_path: string, callback: any) {
+function downloadFile(online_path: string, local_path: string, callback: any) {
     let file = fs.createWriteStream(`${local_path}`);
 
     // Send GET request
@@ -120,7 +120,7 @@ function download_file(online_path: string, local_path: string, callback: any) {
             console.log(success(`Successfully downloaded '${online_path}' => '${local_path}'.`))
         }
     }).on("error", (e: any) => {
-        delete_file(local_path);
+        deleteFile(local_path);
         console.log(error(`Request error when downloading '${online_path}'.`));
         console.log(error(e));
     });
@@ -130,7 +130,7 @@ function download_file(online_path: string, local_path: string, callback: any) {
         file.close();
         callback();
     }).on("error", (e: any) => {
-            delete_file(local_path);
+            deleteFile(local_path);
             console.log(error(`Request error when creating file '${local_path}'.`));
             console.log(error(e));
     });
@@ -140,27 +140,27 @@ function download_file(online_path: string, local_path: string, callback: any) {
  * Checks that the directory that psygo was called in is a valid psygo directory if the command requires it.
  * @param command Command that was invoked.
  */
-function valid_invokation(command: string) {
+function validInvokation(command: string) {
     let commands = ["start", "export"];
     if (commands.includes(command)) {
         // Check for configuration file
-        return file_exists(default_configuration_location);
+        return fileExists(CONFIGURATION_LOCATION);
     }
     return true;
 }
 
 module.exports = {
-    default_configuration_location,
+    CONFIGURATION_LOCATION,
     success,
     info,
     warning,
     error,
-    create_directory,
-    directory_exists,
-    create_file,
-    file_exists,
-    move_file,
-    delete_file,
-    download_file,
-    valid_invokation,
+    createDirectory,
+    directoryExists,
+    createFile,
+    fileExists,
+    moveFile,
+    deleteFile,
+    downloadFile,
+    validInvokation,
 }
