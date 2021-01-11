@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
 // External requirements
-const clear = require('clear');
-const figlet = require('figlet');
-const path = require('path');
 const program = require('commander');
 
 // Internal requirements
@@ -20,7 +17,7 @@ program
     .command('create')
     .description('create a new jsPsych plugin')
     .action(function() {
-        create.start();
+      create.start();
     });
 
 // Build a plugin for local development
@@ -28,11 +25,11 @@ program
     .command('start')
     .description('build the jsPsych plugin for local development and testing')
     .action(function() {
-        if (invokeUtil.validInvokation("start")) {
-            build.local();
-        } else {
-            console.log(invokeUtil.error(`Not a psygo directory!`));
-        }
+      if (invokeUtil.validInvokation('start')) {
+        build.local();
+      } else {
+        console.log(invokeUtil.error(`Not a psygo directory!`));
+      }
     });
 
 program.parse(process.argv);

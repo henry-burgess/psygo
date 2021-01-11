@@ -2,7 +2,7 @@
 const buildMustache = require('mustache');
 const buildUnzipper = require('unzipper');
 const buildFS = require('fs');
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 
 // Internal requirements
 const buildUtil = require('./util');
@@ -51,6 +51,7 @@ function installLibraries() {
     console.log(buildUtil.info(`Extracting ` +
       `'${downloadLocation}/jspsych.zip'...`));
     buildFS.createReadStream(`${downloadLocation}/jspsych.zip`)
+        // eslint-disable-next-line new-cap
         .pipe(buildUnzipper.Extract({path: `${javascriptLocation}/jspsych`}))
         .on('finish', () => {
           console.log(buildUtil.success(`Extracted '` +
@@ -102,16 +103,17 @@ function local() {
  */
 function startLocal() {
   console.log(buildUtil.info(`Running web server @ http://127.0.0.1:8080`));
-  exec(`http-server ${localLocation}`, (error: any, stdout: any, stderr: any) => {
-    if (error) {
-        console.log(buildUtil.error(error.message));
-        return;
-    }
-    if (stderr) {
-      console.log(buildUtil.error(stderr));
-        return;
-    }
-  });
+  exec(`http-server ${localLocation}`,
+      (error: any, stdout: any, stderr: any) => {
+        if (error) {
+          console.log(buildUtil.error(error.message));
+          return;
+        }
+        if (stderr) {
+          console.log(buildUtil.error(stderr));
+          return;
+        }
+      });
 }
 
 /**
@@ -119,12 +121,12 @@ function startLocal() {
  */
 function installSourceCode() {
   const configuration = buildConfig.loadConfiguration(
-    buildUtil.CONFIGURATION_LOCATION);
-  
+      buildUtil.CONFIGURATION_LOCATION);
+
   // Move general files
   configuration.files.forEach((file: any) => {
-    let oldPath = `${sourceLocation}/${file.src}`;
-    let newPath = `${javascriptLocation}/${file.src}`;
+    const oldPath = `${sourceLocation}/${file.src}`;
+    const newPath = `${javascriptLocation}/${file.src}`;
     buildUtil.moveFile(oldPath, newPath, false);
   });
 }
