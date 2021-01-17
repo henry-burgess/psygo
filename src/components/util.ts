@@ -3,8 +3,6 @@ const chalk = require('chalk');
 const fs = require('fs');
 const request = require('request');
 
-// Internal requirements
-
 // Constants
 const CONFIGURATION_LOCATION = './psygo.config.json';
 

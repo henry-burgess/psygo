@@ -11,7 +11,12 @@ const configUtil = require('./util');
  */
 function loadConfiguration(path: string) {
   console.log(configUtil.info(`Loading configuration module '${path}'.`));
-  return JSON.parse(configFS.readFileSync(path, 'utf8'));
+  try {
+    return JSON.parse(configFS.readFileSync(path, 'utf8'));
+  } catch (error) {
+    console.log(configUtil.error(`Could not read ` +
+    `configuration file '${path}'!`));
+  }
 }
 
 module.exports = {

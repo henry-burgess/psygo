@@ -49,6 +49,8 @@ const pluginTemplate = `jsPsych.plugins['{{name}}'] = (function(){
 })();`;
 const configTemplate = `{
     "name": "{{name}}",
+    "description": "",
+    "libraries": [],
     "files": [
         { "src": "main.js" },
         { "src": "classes.js" },

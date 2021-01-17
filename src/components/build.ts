@@ -14,6 +14,7 @@ const localLocation = `./local`;
 const sourceLocation = './src';
 const javascriptLocation = `${localLocation}/js`;
 const downloadLocation = `${javascriptLocation}/temp`;
+const PORT = 3030;
 
 // Templates
 const headTemplate = `<!DOCTYPE html>
@@ -102,8 +103,8 @@ function local() {
  * Starts a local server instance.
  */
 function startLocal() {
-  console.log(buildUtil.info(`Running web server @ http://127.0.0.1:8080`));
-  exec(`http-server ${localLocation}`,
+  console.log(buildUtil.info(`Running web server @ http://127.0.0.1:${PORT}`));
+  exec(`npx http-server ${localLocation} -p ${PORT}`,
       (error: any, stdout: any, stderr: any) => {
         if (error) {
           console.log(buildUtil.error(error.message));
@@ -123,8 +124,15 @@ function installSourceCode() {
   const configuration = buildConfig.loadConfiguration(
       buildUtil.CONFIGURATION_LOCATION);
 
-  // Move general files
+  // Move internal libraries
   configuration.files.forEach((file: any) => {
+    const oldPath = `${sourceLocation}/${file.src}`;
+    const newPath = `${javascriptLocation}/${file.src}`;
+    buildUtil.moveFile(oldPath, newPath, false);
+  });
+
+  // Move external libraries
+  configuration.libraries.forEach((file: any) => {
     const oldPath = `${sourceLocation}/${file.src}`;
     const newPath = `${javascriptLocation}/${file.src}`;
     buildUtil.moveFile(oldPath, newPath, false);
@@ -146,7 +154,7 @@ function createHead(path: string) {
       {src: 'jspsych/jspsych.js'},
       {src: 'jspsych/plugins/jspsych-instructions.js'},
       {src: 'plugin.js'},
-    ],
+    ].concat(configuration.libraries),
     styles: [
       {src: 'js/jspsych/css/jspsych.css'},
     ],
