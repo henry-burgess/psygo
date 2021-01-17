@@ -1,5 +1,7 @@
 <h1> psygo 🧠 </h1>
 
+![](GithubPreview.png)
+
 The easiest way to get started creating plugins for online behavioural experiments! psygo is a CLI tool that streamlines the development of custom jsPsych plugins. by allowing you to test your experiment locally, with the (future) ability to export the experiment for local administration or administration via the jsPsych-friendly Gorilla platform. All the hard work is done for you, from setting up a project, to preparing it for administration.
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/henry-burgess/psygo/CI)
