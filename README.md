@@ -1,6 +1,6 @@
 <h1> psygo 🧠 </h1>
 
-The easiest way to get started creating plugins for jsPsych! psygo is a Node CLI tool that streamlines the development of custom jsPsych plugins. psygo allows you to test your plugin locally, with the ability to export the plugin for local administration or administration via the jsPsych-friendly Gorilla platform. All the hard work is done for you, from setting up a project, to preparing it for administration.
+The easiest way to get started creating plugins for online behavioural experiments! psygo is a CLI tool that streamlines the development of custom jsPsych plugins. by allowing you to test your experiment locally, with the (future) ability to export the experiment for local administration or administration via the jsPsych-friendly Gorilla platform. All the hard work is done for you, from setting up a project, to preparing it for administration.
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/henry-burgess/psygo/CI)
 [![GitHub stars](https://img.shields.io/github/stars/henry-burgess/psygo)](https://github.com/henry-burgess/psygo/stargazers)
@@ -8,9 +8,9 @@ The easiest way to get started creating plugins for jsPsych! psygo is a Node CLI
 
 ## Requirements & Installation
 
-psygo requires Node.js v14+, available [here](https://nodejs.org/). Once Node.js has been installed, psygo can be installed using npm.
+psygo requires Node.js v14+, available [here](https://nodejs.org/). Once Node.js has been installed, psygo can be installed using `npm`.
 
-```bash
+```shell
 npm install -g psygo
 ```
 
@@ -19,7 +19,7 @@ npm install -g psygo
 ### Creating a new plugin
 
 To create a new plugin, open a terminal and call:
-```bash
+```shell
 psygo create
 ```
 You will then be prompted for a plugin name. After providing a plugin name, psygo will create a new sub-directory with the following structure:
@@ -44,10 +44,34 @@ You will then be prompted for a plugin name. After providing a plugin name, psyg
 
 *assets/*: A dedicated folder for placing graphics in.
 
+### Configuration files
+
+The configuration of the project is handled in `psygo.config.json`. The sample configuration looks similar to the following:
+```json
+{
+    "name": "Experiment Name",
+    "description": "Description of your experiment.",
+    "libraries": [
+          { "src": "two.js" }
+    ],
+    "files": [
+        { "src": "main.js" },
+        { "src": "classes.js" },
+        { "src": "plugin.js" }
+    ]
+}
+```
+
+#### Libraries
+Define externally-obtained dependencies such as existing libraries etc. The format of these entries are the same as Files: `{ "src": "<filename>" }`.
+
+#### Files
+Define local dependencies such as `main.js`, `classes.js`, and the jsPsych plugin file `plugin.js`. The format of these entries is: `{ "src": "<filename>" }`.
+
 ### Start
 
 To test the plugin locally, open a terminal, navigate to a folder containing all the plugin files and `psygo.config.js` and call:
-```bash
+```shell
 psygo start
 ```
 
@@ -69,4 +93,4 @@ This will update the directory structure of your project to the following:
       |-- psygo.config.json
 ```
 
-All files in the `local` directory are then served at [http://127.0.0.1:8080](http://127.0.0.1:8080) and allows you to try out your plugin!
+All files in the `local` directory are then served and allows you to try out your plugin!
